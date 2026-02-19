@@ -1,0 +1,1 @@
+Toy offline dataset with short educational text snippets in JSONL format: {"text": "..."}.

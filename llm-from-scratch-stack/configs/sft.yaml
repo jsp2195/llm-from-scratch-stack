@@ -1,0 +1,8 @@
+defaults:
+  - pretrain
+  - _self_
+sft:
+  data_path: data/toy/sft.jsonl
+  base_checkpoint: ''
+  separator: "\n### Response:\n"
+  max_steps: 50

@@ -1,0 +1,9 @@
+defaults:
+  - pretrain
+  - _self_
+dpo:
+  data_path: data/toy/prefs.jsonl
+  base_checkpoint: ''
+  beta: 0.1
+  reference_mode: frozen_base
+  max_steps: 50

@@ -1,0 +1,6 @@
+defaults:
+  - pretrain
+  - _self_
+eval:
+  checkpoint_path: ''
+  max_batches: 50
