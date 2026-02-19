@@ -1,0 +1,9 @@
+defaults:
+  - pretrain
+  - _self_
+
+posttrain:
+  dpo:
+    data_path: data/toy/prefs.jsonl
+    base_checkpoint: ""
+    beta: 0.1

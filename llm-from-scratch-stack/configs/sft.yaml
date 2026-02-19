@@ -1,0 +1,9 @@
+defaults:
+  - pretrain
+  - _self_
+
+posttrain:
+  sft:
+    data_path: data/toy/sft.jsonl
+    base_checkpoint: ""
+    separator: "\n### Response:\n"

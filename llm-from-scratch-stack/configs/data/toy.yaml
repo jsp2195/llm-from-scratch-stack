@@ -1,0 +1,9 @@
+train_path: data/toy/train.jsonl
+val_path: data/toy/val.jsonl
+format: jsonl
+text_field: text
+seq_len: 128
+pack_sequences: true
+num_workers: 0
+shuffle: true
+streaming: false

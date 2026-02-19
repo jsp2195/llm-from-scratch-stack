@@ -1,0 +1,10 @@
+vocab_size: 4096
+n_layers: 8
+n_heads: 8
+d_model: 512
+d_ff: 2048
+max_seq_len: 256
+dropout: 0.1
+norm_type: layernorm
+rope_enabled: false
+tie_embeddings: true
