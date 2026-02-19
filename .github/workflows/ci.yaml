@@ -12,8 +12,5 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e .
-        working-directory: llm-from-scratch-stack
       - run: ruff check .
-        working-directory: llm-from-scratch-stack
       - run: pytest -q
-        working-directory: llm-from-scratch-stack
