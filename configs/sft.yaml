@@ -1,8 +1,13 @@
 defaults:
   - pretrain
   - _self_
+
+train:
+  seed: 1337
+
 sft:
-  data_path: data/toy/sft.jsonl
-  base_checkpoint: ''
-  separator: "\n### Response:\n"
-  max_steps: 50
+  data_path: data/sft.jsonl        # replace with your real dataset
+  base_checkpoint: ''              # required
+  separator: ""                    # IMPORTANT: avoid duplicate header
+  max_steps: 2000                  # 50 → useless, 2k+ needed
+  batch_size: 8                    # good default for single GPU
