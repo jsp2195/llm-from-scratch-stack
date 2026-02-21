@@ -43,4 +43,4 @@ class Tokenizer:
         return self._tok.encode(text).ids
 
     def decode(self, ids: list[int]) -> str:
-        return self._tok.decode(ids)
+        return self._tok.decode(ids, skip_special_tokens=True)
