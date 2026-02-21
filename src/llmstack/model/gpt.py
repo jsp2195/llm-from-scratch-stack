@@ -19,7 +19,7 @@ class GPTModel(nn.Module):
         self.drop = nn.Dropout(cfg.dropout)
         self.blocks = nn.ModuleList([TransformerBlock(cfg) for _ in range(cfg.n_layers)])
         self.norm = RMSNorm(cfg.d_model) if cfg.norm_type == 'rmsnorm' else nn.LayerNorm(cfg.d_model)
-        self.lm_head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=True)
+        self.lm_head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=False)
         if cfg.tie_embeddings:
             self.lm_head.weight = self.tok_emb.weight
         self.apply(self._init_weights)
@@ -40,8 +40,8 @@ class GPTModel(nn.Module):
 
     def forward(self, input_ids: torch.Tensor, labels: torch.Tensor | None = None, loss_mask: torch.Tensor | None = None):
         b, t = input_ids.shape
-        pos = torch.arange(t, device=input_ids.device)
-        x = self.tok_emb(input_ids) + self.pos_emb(pos)[None, :, :]
+        pos = torch.arange(0, t, device=input_ids.device).unsqueeze(0)
+        x = self.tok_emb(input_ids) + self.pos_emb(pos)
         x = self.drop(x)
         for blk in self.blocks:
             if self.cfg.gradient_checkpointing and self.training:
@@ -54,9 +54,13 @@ class GPTModel(nn.Module):
         shift_logits = logits[:, :-1, :].contiguous()
         shift_labels = labels[:, 1:].contiguous().clone()
         if loss_mask is not None:
-            shift_mask = loss_mask[:, 1:]
-            shift_labels[shift_mask == 0] = -100
-        loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1), ignore_index=-100)
+            shift_mask = loss_mask[:, 1:].to(torch.bool)
+            shift_labels = shift_labels.masked_fill(~shift_mask, -100)
+        loss = F.cross_entropy(
+            shift_logits.reshape(-1, shift_logits.size(-1)),
+            shift_labels.reshape(-1),
+            ignore_index=-100
+        )
         return logits, loss
 
     def sequence_logprob(self, input_ids: torch.Tensor, target_mask: torch.Tensor) -> torch.Tensor:
