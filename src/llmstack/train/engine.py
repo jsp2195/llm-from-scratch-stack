@@ -79,7 +79,13 @@ class Trainer:
 
             if self.step % self.cfg.train.log_interval == 0 and is_rank0():
                 dt = time.time() - t0
-                tokens = self.step * self.cfg.train.micro_batch_size * self.cfg.data.seq_len
+                tokens_per_step = (
+                    self.cfg.train.micro_batch_size *
+                    self.cfg.train.grad_accum_steps *
+                    self.cfg.data.seq_len
+                )
+                tokens = self.step * tokens_per_step
+                
                 self.logger.log(self.step, {
                     'loss': acc_loss,
                     'lr': self.scheduler.get_last_lr()[0],
